@@ -12,4 +12,4 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "vita3k-api"
-database_id = "2452c369-1d24-4bc9-9994-029c71619ca3"
+database_id = "ee553ac9-d690-4b67-b9e3-1716a54815a5"
