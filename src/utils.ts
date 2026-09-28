@@ -73,6 +73,8 @@ export async function GetGithubIssues(env: Env, ghlist: GHListName, updated_at: 
 		const numberOfEntries = numPagesJson.open_issues_count;
 		const numberOfPages = Math.ceil(numberOfEntries / PER_PAGE);
 
+        LOG(`There are ${numberOfEntries} open issues, totaling to ${numberOfPages} pages`);
+
 		const fetches: Promise<IssueElement[]>[] = [];
 		for (let i = 1; i <= numberOfPages; i++) {
 			fetches.push(fetch(`https://api.github.com/repos/${ghlist}/issues?state=open&page=${i}&per_page=${PER_PAGE}`, {
