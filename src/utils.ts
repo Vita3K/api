@@ -40,6 +40,8 @@ export async function GetGithubIssues(env: Env, ghlist: GHListName, updated_at: 
 			let r = await (fetch(`https://api.github.com/repos/${ghlist}/issues?state=all&sort=updated&page=${i++}&per_page=${PER_PAGE}${since}`, {
 				headers: {
 					'Authorization': `Bearer ${ACCESS_TOKEN}`,
+					'Accept': `application/vnd.github+json`,
+					'X-GitHub-Api-Version': '2026-03-10',
 					'User-Agent': 'Vita3K API Worker'
 				}
 			}).then(r => r.json() as Promise<IssueElement[]>));
@@ -65,6 +67,8 @@ export async function GetGithubIssues(env: Env, ghlist: GHListName, updated_at: 
 		const numPagesReq = await fetch(`https://api.github.com/repos/${ghlist}`, {
 			headers: {
 				'Authorization': `Bearer ${ACCESS_TOKEN}`,
+				'Accept': `application/vnd.github+json`,
+				'X-GitHub-Api-Version': '2026-03-10',
 				'User-Agent': 'Vita3K API Worker'
 			}
 		});
@@ -73,13 +77,15 @@ export async function GetGithubIssues(env: Env, ghlist: GHListName, updated_at: 
 		const numberOfEntries = numPagesJson.open_issues_count;
 		const numberOfPages = Math.ceil(numberOfEntries / PER_PAGE);
 
-        LOG(`There are ${numberOfEntries} open issues, totaling to ${numberOfPages} pages`);
+		LOG(`There are ${numberOfEntries} open issues, totaling to ${numberOfPages} pages`);
 
 		const fetches: Promise<IssueElement[]>[] = [];
 		for (let i = 1; i <= numberOfPages; i++) {
 			fetches.push(fetch(`https://api.github.com/repos/${ghlist}/issues?state=open&page=${i}&per_page=${PER_PAGE}`, {
 				headers: {
 					'Authorization': `Bearer ${ACCESS_TOKEN}`,
+					'Accept': `application/vnd.github+json`,
+					'X-GitHub-Api-Version': '2026-03-10',
 					'User-Agent': 'Vita3K API Worker'
 				}
 			}).then(r => r.json() as Promise<IssueElement[]>));
