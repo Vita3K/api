@@ -33,13 +33,13 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 
 * If you also want to change the passwords of the `setup` and `clear` endpoints, add another key-value pair below `ACCESS_TOKEN` with key `PASSWORD` and the value being the password you want to set, the endpoints have a default password of `"meow"`
 ## Endpoints
-* All endpoints are asuming the url is `vita3k-api.pedro.moe`
+* All endpoints are asuming the url is `api.vita3k.org`
 ### `GET /ping`
 * Returns pong
 * Example:
 	* Command: 
 	```sh
-	curl -sL vita3k-api.pedro.moe/ping
+	curl -sL api.vita3k.org/ping
 	```
 	* Returns:
 	```js
@@ -53,25 +53,21 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 * Example: 
 	* Command:
 	```sh
-	curl -sL vita3k-api.pedro.moe/lists
+	curl -sL api.vita3k.org/lists
 	```
 	* Returns
 	```js
 	[
 		{
 			"name": "commercial", // Name of the list
-			"githubName": "Vita3K/compatibility", // Github owner/repo of the issue list
+			"owner": "Vita3K", // Github owner of the repo of the issue list
+			"repo": "compatibility", // Name of the repo's issue list
 			"timestamp": 1697056024, // UNIX time of the last changes
-			"labels": [ // The labels that games should be marked with
-				"Playable",
-				"Ingame +",
-				"Ingame -"
-				...
-			]
 		},
 		{
 			"name": "homebrew",
-			"githubName": "Vita3K/homebrew-compatibility",
+			"owner": "Vita3K",
+			"repo": "homebrew-compatibility",
 			"timestamp": 1697056024
 			...
 		},
@@ -87,7 +83,7 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 * Example: 
 	* Command
 	```sh
-	curl -sL vita3k-api.pedro.moe/list/commercial
+	curl -sL api.vita3k.org/list/commercial
 	```
 	* Returns
 	```js
@@ -97,22 +93,19 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
         	{
             	"name": "VVVVVV",
             	"titleId": "PCSB00810",
-            	"status": "Playable",
-            	"color": "0E8A16", // hex color for the background
+            	"labels": "[{\"name\":\"Playable\",\"color\":\"0E8A16\"}]",
             	"issueId": 1 // issue ID in the repository
         	},
         	{
             	"name": "Duke Nukem 3D: Megaton Edition",
             	"titleId": "PCSB00437",
-            	"status": "Playable",
-            	"color": "0E8A16",
+            	"labels": "[{\"name\":\"Playable\",\"color\":\"0E8A16\"}]",
             	"issueId": 2
         	},
         	{
             	"name": "Downwell",
             	"titleId": "PCSB00952",
-            	"status": "Playable",
-            	"color": "0E8A16",
+            	"labels": "[{\"name\":\"Playable\",\"color\":\"0E8A16\"},{\"name\":\"gamemaker\",\"color\":\"81b5d3\"}]",
             	"issueId": 3
         	}
 		]
@@ -127,7 +120,7 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 * Example:
     * Command
     ```sh
-	curl -X POST 'http://vita3k-api.pedro.moe/clear' \
+	curl -X POST 'http://api.vita3k.org/clear' \
       --header "Content-Type: application/json" \
       --data '{"password":"meow"}'
 	```
@@ -141,7 +134,7 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 * Example:
     * Command
     ```sh
-	curl -X POST 'http://vita3k-api.pedro.moe/setup' \
+	curl -X POST 'http://api.vita3k.org/setup' \
       --header "Content-Type: application/json" \
       --data '{"password":"meow"}'
 	```

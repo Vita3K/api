@@ -1,6 +1,6 @@
 import { router } from './route';
 import { awaitWithRetry, GetGithubIssues, LOG, preChecks } from './utils';
-import { Env, LabelsList, ListInfo } from './types';
+import { Env, ListInfo } from './types';
 
 export default {
 	async fetch(request, env, ctx) {
@@ -36,19 +36,13 @@ export default {
 		await preChecks(env);
 
 		// No need to encapusate this one as if it fails, it doesnt matter, the list timestamp is unchanged and will be processed in the next schedule
-		const [listInfosResult, labelsResult] = await env.DB.batch([
-			env.DB.prepare('SELECT * FROM list_info'),
-			env.DB.prepare('SELECT * FROM labels')
-		]);
-		const listInfos = listInfosResult.results as unknown as ListInfo[];
-		const allLabels = labelsResult.results as unknown as LabelsList[];
+		const listInfosResult = await env.DB.prepare('SELECT * FROM list_info').run<ListInfo>();
+		const listInfos = listInfosResult.results;
 
 
 		// Update the list of every list in the list_info table
 		for (const list of listInfos) {
-			const labels = allLabels.filter((l) => l.name == list.name);
-
-			const ghIssues = await GetGithubIssues(env, list.githubName, list.timestamp);
+			const ghIssues = await GetGithubIssues(env.ACCESS_TOKEN, list.owner, list.repo, list.timestamp);
 
 			if (ghIssues.length == 0)
 				return; // There was no activity in the list since last time
@@ -73,21 +67,19 @@ export default {
 					titleId = matches.groups.id;
 				}
 
-				let status = 'Unknown';
-				let color = '000000';
-				if (issue.labels != null) {
-					for (const label of issue.labels) {
-						const foundLabel = labels.find((l) => l.label == label.name);
-						if (typeof foundLabel != 'undefined') {
-							status = label.name;
-							color = label.color;
-							break;
-						}
+				const labels = issue.labels?.map((v) => {
+					if (typeof v === 'string') {
+						return { name: v, color: '000000' };
 					}
-				}
 
-				updateBatch.push(env.DB.prepare('INSERT INTO list (`type`,`name`,`titleId`,`status`,`color`,`issueId`) VALUES (?,?,?,?,?,?)')
-					.bind(list.name, title, titleId, status, color, issue.number));
+					return {
+						name: v.name ?? 'Unknown',
+						color: v.color ?? '000000'
+					};
+				}) ?? [];
+
+				updateBatch.push(env.DB.prepare('INSERT INTO list (`type`,`name`,`titleId`,`labels`,`issueId`) VALUES (?,?,?,?,?)')
+					.bind(list.name, title, titleId, JSON.stringify(labels), issue.number));
 			});
 			if (updateBatch.length > 0) {
 				// Retry the batch in case D1 fails, give 5 attempts and 1 second between each attempt

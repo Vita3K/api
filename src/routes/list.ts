@@ -12,11 +12,11 @@ export default async function (env: Env, req: Request, match: URLPatternResult):
 	const [listInfosResult, listResult] = await env.DB.batch([
 		env.DB.prepare('SELECT * FROM list_info'),
 		// even if the list is invalid, this will return an empty list
-		env.DB.prepare('SELECT `name`,`titleId`,`status`,`color`,`issueId` FROM list WHERE type = ?').bind(match.pathname.groups.type)
+		env.DB.prepare('SELECT `name`,`titleId`,`labels`,`issueId` FROM list WHERE type = ?').bind(match.pathname.groups.type)
 	]);
 
-	const listInfos = listInfosResult.results as unknown as ListInfo[];
-	const list = listResult.results as unknown as GameEntry[];
+	const listInfos = listInfosResult.results as ListInfo[];
+	const list = listResult.results;
 
 	const listInfo = listInfos.find((l) => l.name == match.pathname.groups.type);
 	if (typeof listInfo == 'undefined')

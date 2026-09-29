@@ -8,9 +8,12 @@
     "start": "wrangler dev"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250313.0",
+    "@cloudflare/workers-types": "^5.20260928.1",
     "typescript": "^5.0.4",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.143.0"
   },
-  "packageManager": "npm@11.4.1+sha512.fcee43884166b6f9c5d04535fb95650e9708b6948a1f797eddf40e9778646778a518dfa32651b1c62ff36f4ac42becf177ca46ca27d53f24b539190c8d91802b"
+  "packageManager": "npm@11.4.1+sha512.fcee43884166b6f9c5d04535fb95650e9708b6948a1f797eddf40e9778646778a518dfa32651b1c62ff36f4ac42becf177ca46ca27d53f24b539190c8d91802b",
+  "dependencies": {
+    "octokit": "^5.0.5"
+  }
 }
