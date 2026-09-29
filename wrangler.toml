@@ -15,4 +15,4 @@ database_name = "vita3k-api"
 database_id = "ee553ac9-d690-4b67-b9e3-1716a54815a5"
 
 [[vars]]
-PASSWORD=meow
+PASSWORD = "meow"
