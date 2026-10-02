@@ -1,5 +1,4 @@
 import { Env } from './types';
-import { preChecks } from './utils';
 
 interface Route {
 	name: string; // name of the route, just for tracking
@@ -13,7 +12,6 @@ import index from './routes/index';
 import list from './routes/list';
 import lists from './routes/lists';
 import ping from './routes/ping';
-import setup from './routes/setup';
 
 const routes: Route[] = [
 	{ name: 'clear', path: '/clear', handler: clear, cache: false },
@@ -21,7 +19,6 @@ const routes: Route[] = [
 	{ name: 'list', path: '/list/:type', handler: list, cache: true },
 	{ name: 'lists', path: '/lists', handler: lists, cache: true },
 	{ name: 'ping', path: '/ping', handler: ping, cache: false },
-	{ name: 'setup', path: '/setup', handler: setup, cache: false },
 ];
 
 export async function router(env: Env, req: Request) {
@@ -29,7 +26,6 @@ export async function router(env: Env, req: Request) {
 		const reg = new URLPattern({ pathname: route.path })
 		const match = reg.exec(req.url);
 		if (match) {
-			await preChecks(env);
 			return {
 				response: await route.handler(env, req, match),
 				cache: route.cache

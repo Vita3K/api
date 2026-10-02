@@ -1,5 +1,5 @@
 import { router } from './route';
-import { awaitWithRetry, GetGithubIssues, LOG, preChecks } from './utils';
+import { GetGithubIssues, } from './utils';
 import { Env, ListInfo } from './types';
 
 export default {
@@ -11,8 +11,6 @@ export default {
 		const cache = caches.default;
 		const cacheKey = new Request(request.url);
 
-		// Check whether the value is already available in the cache
-		// if not, you will need to fetch it from origin, and store it in the cache
 		let cachedResponse = await cache.match(cacheKey);
 
 		if (cachedResponse) {
@@ -33,9 +31,7 @@ export default {
 	async scheduled(event, env, ctx) {
 		if (env.ACCESS_TOKEN == null || typeof env.ACCESS_TOKEN == 'undefined')
 			throw 'ACCESS_TOKEN IS NEEDED';
-		await preChecks(env);
 
-		// No need to encapusate this one as if it fails, it doesnt matter, the list timestamp is unchanged and will be processed in the next schedule
 		const listInfosResult = await env.DB.prepare('SELECT * FROM list_info').run<ListInfo>();
 		const listInfos = listInfosResult.results;
 
@@ -82,11 +78,6 @@ export default {
 					.bind(list.name, title, titleId, JSON.stringify(labels), issue.number));
 			});
 			if (updateBatch.length > 0) {
-				// Retry the batch in case D1 fails, give 5 attempts and 1 second between each attempt
-				// Wish there was a better way but around once a week or twice per month D1 fails
-				// ctx.waitUntil(awaitWithRetry(env.DB.batch, [updateBatch], 5, 1000, (err) => {
-				// 	console.warn(err);
-				// }));
 				await env.DB.batch(updateBatch);
 			}
 		}
