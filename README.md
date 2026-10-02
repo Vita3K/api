@@ -125,17 +125,3 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
       --data '{"password":"meow"}'
 	```
 * Returns the D1 returned object with the stats of the query (changed rows, deleted rows, latency, etc)
-
-
-### `POST /setup`
-* Body (JSON)
-    * `password` The password for the endpoint
-* Deletes all the tables and recreates them for when the schema/inserts changes
-* Example:
-    * Command
-    ```sh
-	curl -X POST 'http://api.vita3k.org/setup' \
-      --header "Content-Type: application/json" \
-      --data '{"password":"meow"}'
-	```
-* Returns `Ok!` if the DB got recreated correctly
