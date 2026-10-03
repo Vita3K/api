@@ -10,16 +10,10 @@ export default async function (env: Env, req: Request, _match: URLPatternResult)
     const listInfosResult = await env.DB.prepare('SELECT * FROM list_info').run<ListInfo>();
     const listInfos = listInfosResult.results;
 
-    const output: any = [];
-    listInfos.forEach(list => {
-        output.push({ ...list });
-    });
-
-    return Response.json(output, {
+    return Response.json(listInfos, {
         status: 200, headers: {
             'content-type': 'application/json; charset=utf-8',
             'Access-Control-Allow-Origin': '*'
         }
     })
-
 }

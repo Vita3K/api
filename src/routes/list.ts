@@ -10,19 +10,23 @@ export default async function (env: Env, req: Request, match: URLPatternResult):
 	}
 
 	const [listInfosResult, listResult] = await env.DB.batch([
-		env.DB.prepare('SELECT * FROM list_info'),
+		env.DB.prepare('SELECT `timestamp` FROM list_info WHERE name = ?').bind(match.pathname.groups.type),
 		// even if the list is invalid, this will return an empty list
 		env.DB.prepare('SELECT `name`,`titleId`,`labels`,`issueId` FROM list WHERE type = ?').bind(match.pathname.groups.type)
-	]);
+	]) as [D1Result<Pick<ListInfo, 'timestamp'>>, D1Result<GameEntry>];
 
-	const listInfos = listInfosResult.results as ListInfo[];
+	const listInfo = listInfosResult.results;
+
+	if (listInfo.length == 0)
+		return Response.json('invalid list', { status: 400 });
+	const timestamp = listInfo[0].timestamp;
+
 	const list = listResult.results;
 
-	const listInfo = listInfos.find((l) => l.name == match.pathname.groups.type);
-	if (typeof listInfo == 'undefined')
-		return Response.json('invalid list type', { status: 400 });
-
-	return new Response(JSON.stringify({ date: listInfo.timestamp, list: list }), {
+	return new Response(JSON.stringify({
+		date: timestamp,
+		list: list
+	}), {
 		status: 200, headers: {
 			'content-type': 'application/json; charset=utf-8',
 			'Access-Control-Allow-Origin': '*'
