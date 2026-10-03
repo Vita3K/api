@@ -4,6 +4,7 @@ export interface Env {
     DB: D1Database;
     ACCESS_TOKEN: string | undefined;
     PASSWORD: string | undefined;
+    DISABLE_CACHE: string | undefined;
 }
 
 export interface GameEntry {

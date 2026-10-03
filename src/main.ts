@@ -10,16 +10,16 @@ export default {
 		// Construct the cache key from the cache URL
 		const cache = caches.default;
 		const cacheKey = new Request(request.url);
+		if (env.DISABLE_CACHE !== "true") {
+			let cachedResponse = await cache.match(cacheKey);
 
-		let cachedResponse = await cache.match(cacheKey);
-
-		if (cachedResponse) {
-			return cachedResponse;
+			if (cachedResponse) {
+				return cachedResponse;
+			}
 		}
-
 		const result = await router(env, request);
 
-		if (result.cache) {
+		if (result.cache && env.DISABLE_CACHE !== "true") {
 			result.response.headers.append("Cache-Control", "public, s-maxage=86400"); // 1 Day
 			ctx.waitUntil(cache.put(cacheKey, result.response.clone()));
 		}
