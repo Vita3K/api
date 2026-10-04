@@ -29,7 +29,7 @@ export default {
 
 	async scheduled(event, env, ctx) {
 		switch (event.cron) {
-			case '*/60 * * * *': { // Every hour
+			case '0 * * * *': { // Every hour
 				const request = await fetch('http://fus01.psp2.update.playstation.net/update/psp2/list/us/psp2-updatelist.xml');
 
 				const response = await request.text();
@@ -39,7 +39,7 @@ export default {
 					return;
 				}
 
-				await env.DB.prepare('INSERT OR REPLACE INTO firmware (id, response) VALUES (1, ?)').bind(response).run();
+				await env.DB.prepare('INSERT OR REPLACE INTO firmware (`id`, `response`) VALUES (1, ?)').bind(response).run();
 
 				break;
 			}
@@ -103,6 +103,5 @@ export default {
 				throw `Unknown cron ${event.cron}`;
 			}
 		}
-
 	}
 } satisfies ExportedHandler<Env>;
