@@ -50,6 +50,8 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 * Returns a list of available firmware from sony
 	* Basically is a cache/proxy to [this url](http://fus01.psp2.update.playstation.net/update/psp2/list/us/psp2-updatelist.xml)
 
+* **NOTE:** If the firmware list is not available at the time, it will instead reply with a json saying to try again later, with status code 503 and an http header of `Retry-After` with the value of then a next try should be tried (usually at the start of the next hour)
+
 * Example
 	* Command
 	```sh
