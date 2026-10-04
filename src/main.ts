@@ -19,7 +19,7 @@ export default {
 		}
 		const result = await router(env, request);
 
-		if (result.cache && env.DISABLE_CACHE !== "true") {
+		if (result.response.status == 200 && result.cache && env.DISABLE_CACHE !== "true") {
 			result.response.headers.append("Cache-Control", "public, s-maxage=86400"); // 1 Day
 			ctx.waitUntil(cache.put(cacheKey, result.response.clone()));
 		}
