@@ -8,6 +8,7 @@ interface Route {
 }
 
 import clear from './routes/clear';
+import firmware from './routes/firmware';
 import index from './routes/index';
 import list from './routes/list';
 import lists from './routes/lists';
@@ -15,6 +16,7 @@ import ping from './routes/ping';
 
 const routes: Route[] = [
 	{ name: 'clear', path: '/clear', handler: clear, cache: false },
+	{ name: 'firmware', path: '/firmware', handler: firmware, cache: true },
 	{ name: 'index', path: '/', handler: index, cache: true },
 	{ name: 'list', path: '/list/:type', handler: list, cache: true },
 	{ name: 'lists', path: '/lists', handler: lists, cache: true },

@@ -46,6 +46,18 @@ Cloudflare worker for the cache service of the compatibility list of Vita3K
 	"Pong!"
 	```
 
+### `GET /firmware`
+* Returns a list of available firmware from sony
+	* Basically is a cache/proxy to [this url](http://fus01.psp2.update.playstation.net/update/psp2/list/us/psp2-updatelist.xml)
+
+* Example
+	* Command
+	```sh
+	curl -sL api.vita3k.org/firmware
+	```
+	* Returns:
+		* XML data, not in our control
+
 
 ### `GET /lists`
 * Returns a list of the available lists

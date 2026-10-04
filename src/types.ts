@@ -23,3 +23,7 @@ export interface ListInfo {
     repo: string;
     timestamp: number;
 }
+
+export interface Firmware {
+    response: string;
+}
