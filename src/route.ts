@@ -28,9 +28,10 @@ export async function router(env: Env, req: Request) {
 		const reg = new URLPattern({ pathname: route.path })
 		const match = reg.exec(req.url);
 		if (match) {
+			const response = await route.handler(env, req, match)
 			return {
-				response: await route.handler(env, req, match),
-				cache: route.cache
+				response: response,
+				cache: response.status >= 200 && response.status < 300
 			};
 		}
 	}
