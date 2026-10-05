@@ -9,6 +9,21 @@ crons = ["*/1 * * * *", "0 * * * *"]
 [observability]
 enabled = true
 
+[observability.logs]
+enabled = true
+invocation_logs = true
+persist = true
+
+[observability.traces]
+enabled = true
+persist = true
+
+[observability.issues]
+enabled = true
+
+[observability.issue_detection]
+enabled = true
+
 [[d1_databases]]
 binding = "DB"
 database_name = "vita3k-api"
