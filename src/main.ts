@@ -10,7 +10,8 @@ export default {
 		// Construct the cache key from the cache URL
 		const cache = caches.default;
 		const cacheKey = new Request(request.url);
-		if (env.DISABLE_CACHE !== "true") {
+		const cacheEnabled = request.method === 'GET' && env.DISABLE_CACHE !== "true";
+		if (cacheEnabled) {
 			let cachedResponse = await cache.match(cacheKey);
 
 			if (cachedResponse) {
@@ -19,7 +20,7 @@ export default {
 		}
 		const result = await router(env, request);
 
-		if (result.cache && env.DISABLE_CACHE !== "true") {
+		if (result.cache && cacheEnabled) {
 			result.response.headers.append("Cache-Control", "public, s-maxage=86400"); // 1 Day
 			ctx.waitUntil(cache.put(cacheKey, result.response.clone()));
 		}
