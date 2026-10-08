@@ -57,7 +57,7 @@ export default {
 					const ghIssues = await GetGithubIssues(env.ACCESS_TOKEN, list.owner, list.repo, list.timestamp);
 
 					if (ghIssues.length == 0)
-						return; // There was no activity in the list since last time
+						continue; // There was no activity in the list since last time
 
 					const updateBatch: D1PreparedStatement[] = [];
 					// Delete issues that updated
